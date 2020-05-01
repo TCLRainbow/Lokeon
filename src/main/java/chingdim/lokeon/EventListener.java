@@ -1,25 +1,65 @@
 package chingdim.lokeon;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class EventListener implements Listener {
-    private Http http;
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
-    EventListener(Http http) {
-        this.http = http;
+public class EventListener implements Listener {
+    private Lokeon plugin;
+    private CompletableFuture<Void> future = new CompletableFuture<>();
+
+    EventListener(Lokeon plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        http.join(event.getPlayer().getName());
+        plugin.getHttp().join(event.getPlayer().getName());
+        future.cancel(false);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        http.quit(event.getPlayer().getName());
+        plugin.getHttp().quit(event.getPlayer().getName());
+        if (plugin.getServer().getOnlinePlayers().size() == 1) {
+            future = CompletableFuture.runAsync(() -> {
+                try {
+                    plugin.getLogger().info("Starting server shutdown clock");
+                    int time = plugin.getConfig().getBoolean("debug") ? 10000 : 900000;
+                    Thread.sleep(time);
+                    plugin.getLogger().info("Server shutdown clock completed");
+                } catch (InterruptedException e) {
+                    plugin.getLogger().severe("Future Interrupted Exception");
+                }
+            });
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onCmdPreprocess(PlayerCommandPreprocessEvent event) {
+        if (event.getMessage().equalsIgnoreCase("/stop")) {
+            event.setCancelled(true);
+            plugin.getLogger().info("A player executed /stop");
+            postprocessShutdown();
+        }
+    }
+
+    private void postprocessShutdown() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                if (!plugin.getConfig().getBoolean("debug")) Runtime.getRuntime().exec("shutdown -h");
+                plugin.getLogger().info("Added JVM shutdown hook");
+            } catch (IOException e) {
+                plugin.getLogger().severe("IOException when executing shutdown command");
+            }
+        }));
+        plugin.getServer().shutdown();
     }
 
 }

@@ -1,3 +1,3 @@
 Lokeon
 
-Discord: [badge](https://img.shields.io/discord/285366651312930817)
+Discord: ![badge](https://img.shields.io/discord/285366651312930817)
