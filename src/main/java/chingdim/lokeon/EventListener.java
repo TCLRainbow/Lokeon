@@ -21,7 +21,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         plugin.getHttp().join(event.getPlayer().getName());
-        future.cancel(false);
+        future.cancel(true);
     }
 
     @EventHandler
@@ -33,8 +33,10 @@ public class EventListener implements Listener {
                     plugin.getLogger().info("Starting server shutdown clock");
                     int time = plugin.getConfig().getBoolean("debug") ? 10000 : 900000;
                     Thread.sleep(time);
-                    plugin.getLogger().info("Server shutdown clock completed");
-                    postprocessShutdown(true);
+                    if (!future.isCancelled()) {
+                        plugin.getLogger().info("Server shutdown clock completed");
+                        postprocessShutdown("");
+                    }
                 } catch (InterruptedException e) {
                     plugin.getLogger().severe("Future Interrupted Exception");
                 }
@@ -47,12 +49,12 @@ public class EventListener implements Listener {
         if (event.getMessage().equalsIgnoreCase("/stop")) {
             event.setCancelled(true);
             plugin.getLogger().info("A player executed /stop");
-            postprocessShutdown(false);
+            postprocessShutdown(event.getPlayer().getName());
         }
     }
 
-    private void postprocessShutdown(boolean idle) {
-        plugin.getHttp().shutdown(idle);
+    private void postprocessShutdown(String name) {
+        plugin.getHttp().shutdown(name);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 if (!plugin.getConfig().getBoolean("debug")) Runtime.getRuntime().exec("shutdown -h");

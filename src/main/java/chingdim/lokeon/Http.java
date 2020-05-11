@@ -19,11 +19,7 @@ public class Http {
     void hook() {get("hook");}
     void join(String name) {post("join", name);}
     void quit(String name) {post("quit", name);}
-    void shutdown(boolean idle) {
-        String url = "shutdown";
-        if (idle) url += "?idle=1";
-        get(url);
-    }
+    void shutdown(String name) {get("shutdown?name=" + name);}
 
     private Request.Builder build(String path) {
         return new Request.Builder().url(address + path);

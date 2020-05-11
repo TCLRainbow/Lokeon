@@ -43,12 +43,6 @@ public class Lokeon extends JavaPlugin{
         pm.registerEvents(new EventListener(this), this);
     }
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        if (this.getConfig().getBoolean("debug")) getServer().shutdown();
-    }
-
     Http getHttp() { return http;}
 
 }
