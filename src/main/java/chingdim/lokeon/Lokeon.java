@@ -6,11 +6,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.concurrent.ExecutionException;
 
 public class Lokeon extends JavaPlugin{
-    //private static Lokeon instance;
     private String ip;
     private Http http;
-
-    //public Lokeon() { instance = this; }
 
     private void build_ip(String host) {
         ip = String.format("http://%s:80/", host);
@@ -49,8 +46,7 @@ public class Lokeon extends JavaPlugin{
     @Override
     public void onDisable() {
         super.onDisable();
-        getLogger().info("Sending shutdown message");
-        http.shutdown();
+        if (this.getConfig().getBoolean("debug")) getServer().shutdown();
     }
 
     Http getHttp() { return http;}

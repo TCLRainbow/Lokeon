@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 class AWS {
-    private static Ec2AsyncClient ec2 = Ec2AsyncClient.builder().region(Region.EU_NORTH_1).build();
+    private static final Ec2AsyncClient ec2 = Ec2AsyncClient.builder().region(Region.EU_NORTH_1).build();
 
     String getInstanceIP() throws ExecutionException, InterruptedException {
         DescribeInstancesRequest request = DescribeInstancesRequest.builder().instanceIds("i-0684c778f22b3980b").build();

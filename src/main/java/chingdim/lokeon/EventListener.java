@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
 public class EventListener implements Listener {
-    private Lokeon plugin;
+    private final Lokeon plugin;
     private CompletableFuture<Void> future = new CompletableFuture<>();
 
     EventListener(Lokeon plugin) {
@@ -34,6 +34,7 @@ public class EventListener implements Listener {
                     int time = plugin.getConfig().getBoolean("debug") ? 10000 : 900000;
                     Thread.sleep(time);
                     plugin.getLogger().info("Server shutdown clock completed");
+                    postprocessShutdown(true);
                 } catch (InterruptedException e) {
                     plugin.getLogger().severe("Future Interrupted Exception");
                 }
@@ -46,11 +47,12 @@ public class EventListener implements Listener {
         if (event.getMessage().equalsIgnoreCase("/stop")) {
             event.setCancelled(true);
             plugin.getLogger().info("A player executed /stop");
-            postprocessShutdown();
+            postprocessShutdown(false);
         }
     }
 
-    private void postprocessShutdown() {
+    private void postprocessShutdown(boolean idle) {
+        plugin.getHttp().shutdown(idle);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 if (!plugin.getConfig().getBoolean("debug")) Runtime.getRuntime().exec("shutdown -h");

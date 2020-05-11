@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 public class Http {
-    private OkHttpClient client = new OkHttpClient.Builder().build();
-    private String address;
-    private Logger logger;
+    private final OkHttpClient client = new OkHttpClient.Builder().build();
+    private final String address;
+    private final Logger logger;
 
     Http(String address, Logger logger) {
         this.address = address;
@@ -19,7 +19,11 @@ public class Http {
     void hook() {get("hook");}
     void join(String name) {post("join", name);}
     void quit(String name) {post("quit", name);}
-    void shutdown(String name) {get("shutdown");}
+    void shutdown(boolean idle) {
+        String url = "shutdown";
+        if (idle) url += "?idle=1";
+        get(url);
+    }
 
     private Request.Builder build(String path) {
         return new Request.Builder().url(address + path);
