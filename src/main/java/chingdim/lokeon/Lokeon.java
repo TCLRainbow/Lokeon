@@ -40,7 +40,9 @@ public class Lokeon extends JavaPlugin{
         getLogger().info("Sending hook");
         http.hook();
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvents(new EventListener(this), this);
+        EventListener eventListener = new EventListener(this);
+        pm.registerEvents(eventListener, this);
+        eventListener.startTimer();
     }
 
     Http getHttp() { return http;}

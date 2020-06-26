@@ -24,24 +24,26 @@ public class EventListener implements Listener {
         future.cancel(true);
     }
 
+    void startTimer() {
+        future = CompletableFuture.runAsync(() -> {
+            try {
+                plugin.getLogger().info("Starting server shutdown clock");
+                int time = plugin.getConfig().getBoolean("debug") ? 10000 : 900000;
+                Thread.sleep(time);
+                if (!future.isCancelled()) {
+                    plugin.getLogger().info("Server shutdown clock completed");
+                    postprocessShutdown("");
+                }
+            } catch (InterruptedException e) {
+                plugin.getLogger().severe("Future Interrupted Exception");
+            }
+        });
+    }
+
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         plugin.getHttp().quit(event.getPlayer().getName());
-        if (plugin.getServer().getOnlinePlayers().size() == 1) {
-            future = CompletableFuture.runAsync(() -> {
-                try {
-                    plugin.getLogger().info("Starting server shutdown clock");
-                    int time = plugin.getConfig().getBoolean("debug") ? 10000 : 900000;
-                    Thread.sleep(time);
-                    if (!future.isCancelled()) {
-                        plugin.getLogger().info("Server shutdown clock completed");
-                        postprocessShutdown("");
-                    }
-                } catch (InterruptedException e) {
-                    plugin.getLogger().severe("Future Interrupted Exception");
-                }
-            });
-        }
+        if (plugin.getServer().getOnlinePlayers().size() == 1) startTimer();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -57,8 +59,7 @@ public class EventListener implements Listener {
         plugin.getHttp().shutdown(name);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                if (!plugin.getConfig().getBoolean("debug")) Runtime.getRuntime().exec("shutdown -h");
-                plugin.getLogger().info("Added JVM shutdown hook");
+                if (!plugin.getConfig().getBoolean("debug")) Runtime.getRuntime().exec("shutdown 0");
             } catch (IOException e) {
                 plugin.getLogger().severe("IOException when executing shutdown command");
             }
