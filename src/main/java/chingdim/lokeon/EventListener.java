@@ -27,9 +27,9 @@ public class EventListener implements Listener {
     void startTimer() {
         future = CompletableFuture.runAsync(() -> {
             try {
-                plugin.getLogger().info("Starting server shutdown clock");
-                int time = plugin.getConfig().getBoolean("debug") ? 10000 : 900000;
-                Thread.sleep(time);
+                int time = plugin.getConfig().getInt("idle");
+                plugin.getLogger().info(String.format("Starting server shutdown clock: %s seconds", time));
+                Thread.sleep(time * 1000);
                 if (!future.isCancelled()) {
                     plugin.getLogger().info("Server shutdown clock completed");
                     postprocessShutdown("");
