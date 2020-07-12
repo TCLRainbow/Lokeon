@@ -1,0 +1,4 @@
+name: Lokeon
+version: @version@
+main: chingdim.lokeon.Lokeon
+description: Waterfall plugin for bruckserver

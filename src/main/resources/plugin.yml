@@ -1,8 +1,0 @@
-name: Lokeon
-version: "1.2"
-api-version: "1.15"
-main: chingdim.lokeon.Lokeon
-
-load: STARTUP
-author: Pythonic_Rainbow
-website: https://github.com/TCLRainbow/Lokeon
