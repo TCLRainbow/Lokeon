@@ -1,6 +1,9 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-apply plugin: 'java'
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'java'
+}
 
 group = 'chingdim'
 version = '2.0-SNAPSHOT'
@@ -21,7 +24,17 @@ repositories {
 }
 
 dependencies {
+    implementation platform('software.amazon.awssdk:bom:latest.release')
+    implementation 'software.amazon.awssdk:ec2'
+
+    implementation 'com.squareup.okhttp3:okhttp:latest.release'
+
     compileOnly 'io.github.waterfallmc:waterfall-api:1.15-SNAPSHOT'
+}
+
+configurations {
+    shade
+    compile.extendsFrom shade
 }
 
 processResources {
