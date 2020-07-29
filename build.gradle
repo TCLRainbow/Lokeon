@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+}
+
+group 'chingdim.lokeon'
+version '2.0-SNAPSHOT'
+
+allprojects {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+}

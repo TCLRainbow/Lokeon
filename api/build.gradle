@@ -1,0 +1,13 @@
+plugins {
+    id 'java'
+}
+
+group 'chingdim.lokeon.api'
+version '2.0-SNAPSHOT'
+
+dependencies {
+    // implementation platform('software.amazon.awssdk:bom:latest.release')
+    implementation 'software.amazon.awssdk:ec2:latest.release'
+
+    implementation 'com.squareup.okhttp3:okhttp:latest.release'
+}
