@@ -1,0 +1,4 @@
+name: Lokeon
+version: @version@
+main: chingdim.lokeon.LokeonWaterfall
+description: Lokeon for Waterfall
