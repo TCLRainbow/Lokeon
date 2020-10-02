@@ -20,6 +20,7 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+        plugin.getLogger().info("Someone joined, cancelling shutdown clock");
         plugin.getHttp().join(event.getPlayer().getName());
         future.cancel(true);
     }
@@ -27,7 +28,7 @@ public class EventListener implements Listener {
     void startTimer() {
         future = CompletableFuture.runAsync(() -> {
             try {
-                int time = plugin.getConfig().getInt("idle");
+                int time = Math.max(plugin.getConfig().getInt("idle"), 30);
                 plugin.getLogger().info(String.format("Starting server shutdown clock: %s seconds", time));
                 Thread.sleep(time * 1000);
                 if (!future.isCancelled()) {
