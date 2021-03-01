@@ -21,7 +21,7 @@ public class Lokeon extends JavaPlugin{
         if (this.getConfig().getBoolean("debug")) build_ip("localhost");
         else {
             try {
-                build_ip(aws.getInstanceIP());
+                build_ip(aws.getInstanceIP(this.getConfig().getString("instance")));
             } catch (ExecutionException | InterruptedException e) {
                 StringBuilder msg = new StringBuilder();
                 for (StackTraceElement element : e.getStackTrace()) {
