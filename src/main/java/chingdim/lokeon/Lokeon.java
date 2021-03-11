@@ -37,11 +37,7 @@ public class Lokeon extends JavaPlugin{
                 setHost(aws.getInstanceIP(this.getConfig().getString("instance")));
             } catch (ExecutionException | InterruptedException e) {
                 // Cannot set the host
-                StringBuilder msg = new StringBuilder();
-                for (StackTraceElement element : e.getStackTrace()) {
-                    msg.append(element.toString()).append("\n");
-                }
-                getLogger().severe(msg.toString());
+                e.printStackTrace(System.err);
             }
         }
         getLogger().info("Address: " + host);
