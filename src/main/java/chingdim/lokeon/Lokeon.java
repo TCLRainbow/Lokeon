@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutionException;
  * Main class.
  * Allows the Minecraft server plugin loader(Spigot) to identify this .jar file as a Spigot Plugin.
  */
-public class Lokeon extends JavaPlugin{
+public class Lokeon extends JavaPlugin {
     private String host; // The URL for sending HTTP requests to DimBot Albon
     private Http http; // An instance of the Http class
 
