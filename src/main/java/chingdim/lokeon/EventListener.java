@@ -93,7 +93,7 @@ public class EventListener implements Listener {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 // The real instance is running Linux
-                if (!plugin.getConfig().getBoolean("debug")) Runtime.getRuntime().exec("shutdown 0");
+                if (!plugin.getConfig().getBoolean("debug")) Runtime.getRuntime().exec("sudo shutdown 0");
             } catch (IOException e) {
                 plugin.getLogger().severe("IOException when executing shutdown command");
             }
