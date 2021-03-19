@@ -34,7 +34,7 @@ public class Lokeon extends JavaPlugin {
         if (this.getConfig().getBoolean("debug")) setHost("localhost");
         else {
             try {  // Sets the host to be the remote DimBot instance
-                setHost(aws.getInstanceIP(this.getConfig().getString("instance")));
+                setHost(aws.getInstanceIP());
             } catch (ExecutionException | InterruptedException e) {
                 // Cannot set the host
                 e.printStackTrace(System.err);

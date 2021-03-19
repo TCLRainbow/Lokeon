@@ -4,6 +4,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.ec2.Ec2AsyncClient;
 import software.amazon.awssdk.services.ec2.model.DescribeInstancesRequest;
 import software.amazon.awssdk.services.ec2.model.DescribeInstancesResponse;
+import software.amazon.awssdk.services.ec2.model.Filter;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -17,13 +18,15 @@ class AWS {
 
     /**
      * Gets DimBot instance IP
-     * @param instance The instance ID
      * @return IP
      * @throws ExecutionException Async task exception
      * @throws InterruptedException Async task exception
      */
-    String getInstanceIP(String instance) throws ExecutionException, InterruptedException {
-        DescribeInstancesRequest request = DescribeInstancesRequest.builder().instanceIds(instance).build();
+    String getInstanceIP() throws ExecutionException, InterruptedException {
+        Filter isRunning = Filter.builder().name("instance-state-name").values("running").build();
+        Filter isNameDimBot = Filter.builder().name("tag:Name").values("DimBot").build();
+        DescribeInstancesRequest request = DescribeInstancesRequest.builder()
+                .filters(isNameDimBot, isRunning).build();
         CompletableFuture<DescribeInstancesResponse> future = ec2.describeInstances(request);
         DescribeInstancesResponse response = future.get();
         return response.reservations().get(0).instances().get(0).publicIpAddress();
