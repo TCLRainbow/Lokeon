@@ -63,7 +63,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         plugin.getHttp().quit(event.getPlayer().getName());
-        // The plugin counts itself as an online player, so when there is 1 online player left,
+        // The plugin counts console as an online player, so when there is 1 online player left,
         // that means no one is in the server, so initiate timer
         if (plugin.getServer().getOnlinePlayers().size() == 1) startTimer();
     }

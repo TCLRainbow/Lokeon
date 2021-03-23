@@ -14,14 +14,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class Lokeon_aaS {
-    private static final HttpClient client = HttpClient.newBuilder().build();
+    private static final HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build();
     private static final Ec2Client ec2 = Ec2Client.builder().region(Region.EU_WEST_1).build();
     private static String ip;
 
-    private static HttpRequest buildHttpRequest(String path) {
+    private static HttpRequest.Builder buildHttpRequest(String path) {
         return HttpRequest.newBuilder()
-                .uri(URI.create(String.format("http://%s/%s", ip, path)))
-                .build();
+                .uri(URI.create(String.format("http://%s/%s", ip, path)));
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -32,7 +31,9 @@ public class Lokeon_aaS {
         DescribeInstancesResponse response = ec2.describeInstances(request);
         ip =  response.reservations().get(0).instances().get(0).publicIpAddress();
 
-        HttpRequest bootRequest = buildHttpRequest("boot");
+        HttpRequest bootRequest = buildHttpRequest("boot")
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
         client.sendAsync(bootRequest, HttpResponse.BodyHandlers.discarding());
 
         FileWriter fw = new FileWriter("ip");
@@ -48,8 +49,10 @@ public class Lokeon_aaS {
             p.waitFor();
             int code = p.exitValue();
             System.out.println("Server.jar exited with code " + code);
-            HttpRequest exitcodeRequest = buildHttpRequest("exitcode?code=" + code);
-            client.sendAsync(exitcodeRequest, HttpResponse.BodyHandlers.discarding());
+            HttpRequest exitRequest = buildHttpRequest("exit")
+                    .POST(HttpRequest.BodyPublishers.ofString(String.valueOf(code)))
+                    .build();
+            client.sendAsync(exitRequest, HttpResponse.BodyHandlers.discarding());
         }
 
     }

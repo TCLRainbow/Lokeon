@@ -11,7 +11,7 @@ import java.util.logging.Logger;
  */
 public class Http {
     // Master HTTP Client for interacting with DimBot
-    private static final HttpClient client = HttpClient.newBuilder().build();
+    private static final HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build();
     private final String address;
     private final Logger logger;
 
@@ -21,30 +21,20 @@ public class Http {
     }
 
     // Shorthands for sending various HTTP requests to DimBot
-    void hook() {get("hook");}
+    void hook() {post("hook");}
     void join(String name) {post("join", name);}
     void quit(String name) {post("quit", name);}
-    void shutdown(String name) {get("shutdown?name=" + name);}
+    void shutdown(String name) {post("shutdown", name);}
 
 
     private void request_handle(HttpRequest request, String path) {
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenAccept(response -> {
                     int code = response.statusCode();
-                    if (code >= 400) logger.severe(String.format("Request %s responded with %s", path, code));
-                    else logger.info(String.format("Request %s responded with %s", path, code));
+                    String msg = String.format("Request %s responded with %s", path, code);
+                    if (code >= 400) logger.severe(msg);
+                    else logger.info(msg);
                 });
-    }
-
-    /**
-     * A HTTP GET constructor for requests
-     * @param path Path for the GET request
-     */
-    private void get(String path) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(address + path))
-                .build();
-        request_handle(request, path);
     }
 
     /**
@@ -55,6 +45,14 @@ public class Http {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(address + path))
                 .POST(HttpRequest.BodyPublishers.ofString(data))
+                .build();
+        request_handle(request, path);
+    }
+
+    private void post(String path) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(address + path))
+                .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
         request_handle(request, path);
     }
