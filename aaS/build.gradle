@@ -1,0 +1,38 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'java'
+}
+
+group 'chingdim.lokeon'
+
+// We now use Java 11
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation platform('software.amazon.awssdk:bom:latest.release')
+    implementation 'software.amazon.awssdk:ec2'
+}
+
+
+jar {
+    archiveFileName = 'Lokeon_aaS.jar'
+    manifest {
+        attributes(
+                'Main-Class': 'chingdim.lokeon.aas.Lokeon_aaS'
+        )
+    }
+}
+
+shadowJar {
+    archiveFileName = 'Lokeon_aaS.jar'
+    manifest {
+        attributes(
+                'Main-Class': 'chingdim.lokeon.aas.Lokeon_aaS'
+        )
+    }
+}

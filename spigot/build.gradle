@@ -1,12 +1,11 @@
 // Plugins for the Gradle build framework
 plugins {
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
     id 'java'
 }
 
 // Spigot plugin meta
-group = pluginGroup
-version = pluginVersion
+group = 'chingdim.lokeon'
+version = '2.0'
 
 // We now use Java 11
 sourceCompatibility = '11'
@@ -14,31 +13,19 @@ targetCompatibility = '11'
 
 // Repoes for Gradle
 repositories {
-    mavenCentral()
     maven {
         name = 'papermc'
         url = 'https://papermc.io/repo/repository/maven-public/'
     }
-    maven {
-        name = 'sonatype'
-        url = 'https://oss.sonatype.org/content/groups/public/'
-    }
-}
-
-// Shade dependencies as a fat jar
-configurations {
-    shade
-    compile.extendsFrom shade
 }
 
 // Dependencies for Lokeon
 dependencies {
-    implementation platform('software.amazon.awssdk:bom:latest.release')
-    implementation 'software.amazon.awssdk:ec2'
-
-    implementation 'com.squareup.okhttp3:okhttp:latest.release'
-
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+}
+
+jar {
+    archiveBaseName = 'Lokeon'
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
