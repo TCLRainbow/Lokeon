@@ -1,13 +1,14 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'java'
 }
 
 group 'chingdim.lokeon'
 
-// We now use Java 11
-sourceCompatibility = '11'
-targetCompatibility = '11'
+// We now use Java 14
+compileJava {
+    options.release = 14
+}
 
 repositories {
     mavenCentral()

@@ -7,9 +7,10 @@ plugins {
 group = 'chingdim.lokeon'
 version = '2.0'
 
-// We now use Java 11
-sourceCompatibility = '11'
-targetCompatibility = '11'
+// We now use Java 14
+compileJava {
+    options.release = 14
+}
 
 // Repoes for Gradle
 repositories {
@@ -28,10 +29,12 @@ jar {
     archiveBaseName = 'Lokeon'
 }
 
+
 import org.apache.tools.ant.filters.ReplaceTokens
 // Include resources into the .jar
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         filter ReplaceTokens, tokens: [version: version]
     }
+    setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 }
