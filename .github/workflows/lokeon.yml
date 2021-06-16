@@ -25,12 +25,15 @@ jobs:
       run: chmod +x gradlew
     - name: ShadowJar aaS
       run: ./gradlew aaS:shadowJar
+    - name: Upload aaS
+      uses: actions/upload-artifact@v2
+      with:
+        name: Lokeon_aaS
+        path: aaS/build/libs/Lokeon_aaS.jar
     - name: Build Spigot
       run: ./gradlew spigot:build
     - name: Upload
       uses: actions/upload-artifact@v2
       with:
         name: Lokeon
-        path: |
-            aaS/build/libs/Lokeon_aaS.jar
-            spigot/build/libs/*.jar
+        path: spigot/build/libs/*.jar
