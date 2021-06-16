@@ -6,6 +6,7 @@ import software.amazon.awssdk.services.ec2.model.DescribeInstancesRequest;
 import software.amazon.awssdk.services.ec2.model.DescribeInstancesResponse;
 import software.amazon.awssdk.services.ec2.model.Filter;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
@@ -17,6 +18,8 @@ public class Lokeon_aaS {
     private static final HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build();
     private static final Ec2Client ec2 = Ec2Client.builder().region(Region.EU_WEST_1).build();
     private static String ip;
+    //Check via sudo update-alternatives --config java
+    private static final String JAVA_8_PATH = "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.292.b10-3.fc34.x86_64/jre/bin/java";
 
     private static HttpRequest.Builder buildHttpRequest(String path) {
         return HttpRequest.newBuilder()
@@ -34,15 +37,17 @@ public class Lokeon_aaS {
         HttpRequest bootRequest = buildHttpRequest("boot")
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
-        client.sendAsync(bootRequest, HttpResponse.BodyHandlers.discarding());
-
-        FileWriter fw = new FileWriter("ip");
+        String serverDir = client.send(bootRequest, HttpResponse.BodyHandlers.ofString()).body();
+        System.out.println("server: " + serverDir);
+        FileWriter fw = new FileWriter(serverDir + "/ip");
         fw.write(ip);
         fw.close();
+        String exe = serverDir.startsWith("s") ? "java" : JAVA_8_PATH;
 
         //noinspection InfiniteLoopStatement
         while (true) {
-            ProcessBuilder pb = new ProcessBuilder("java", "-Xmx4G", "-jar", "server.jar");
+            ProcessBuilder pb = new ProcessBuilder(exe, "-Xmx4G", "-jar", "server.jar");
+            pb.directory(new File("./" + serverDir));
             pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
             pb.redirectError(ProcessBuilder.Redirect.INHERIT);
             Process p = pb.start();
@@ -52,7 +57,7 @@ public class Lokeon_aaS {
             HttpRequest exitRequest = buildHttpRequest("exit")
                     .POST(HttpRequest.BodyPublishers.ofString(String.valueOf(code)))
                     .build();
-            client.sendAsync(exitRequest, HttpResponse.BodyHandlers.discarding());
+            client.send(exitRequest, HttpResponse.BodyHandlers.discarding());
         }
 
     }
