@@ -37,17 +37,19 @@ public class Lokeon_aaS {
         HttpRequest bootRequest = buildHttpRequest("boot")
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
-        String serverDir = client.send(bootRequest, HttpResponse.BodyHandlers.ofString()).body();
-        System.out.println("server: " + serverDir);
-        FileWriter fw = new FileWriter(serverDir + "/ip");
+        client.send(bootRequest, HttpResponse.BodyHandlers.discarding());
+        //String serverDir = client.send(bootRequest, HttpResponse.BodyHandlers.ofString()).body();
+        //System.out.println("server: " + serverDir);
+        FileWriter fw = new FileWriter("ip"); // serverDir + "/ip"
         fw.write(ip);
         fw.close();
-        String exe = serverDir.startsWith("s") ? "java" : JAVA_8_PATH;
+        //String exe = serverDir.startsWith("s") ? "java" : JAVA_8_PATH;
+        String exe = "java";
 
         //noinspection InfiniteLoopStatement
         while (true) {
-            ProcessBuilder pb = new ProcessBuilder(exe, "-Xmx4G", "-jar", "server.jar");
-            pb.directory(new File("./" + serverDir));
+            ProcessBuilder pb = new ProcessBuilder(exe, "-Xmx4G", "-jar", "paper.jar");
+            //pb.directory(new File("./" + serverDir));
             pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
             pb.redirectError(ProcessBuilder.Redirect.INHERIT);
             Process p = pb.start();
