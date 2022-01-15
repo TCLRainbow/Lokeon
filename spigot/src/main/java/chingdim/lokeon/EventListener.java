@@ -41,8 +41,8 @@ public class EventListener implements Listener {
         // Starts the timer concurrently
         future = CompletableFuture.runAsync(() -> {
             try {
-                // The idle period is defined in configuration file, with a minimum defaults of 30s
-                long time = Math.max(plugin.getConfig().getInt("idle"), 30);
+                // The idle period is defined in configuration file, with a minimum defaults of xs
+                long time = Math.max(plugin.getConfig().getInt("idle"), 900);
                 plugin.getLogger().info(String.format("Starting server shutdown clock: %s seconds", time));
                 Thread.sleep(time * 1000);
                 // Time is up

@@ -5,7 +5,7 @@ plugins {
 
 // Spigot plugin meta
 group = 'chingdim.lokeon'
-version = '2.0'
+version = '2.0.1'
 
 // We now use Java 14
 compileJava {

@@ -24,11 +24,11 @@ public class Lokeon extends JavaPlugin {
         super.onLoad();
         // Normally in debug environments, DimBot is tested alongside with Lokeon
         // Therefore, Lokeon events should be sent to the same host.
-        String ip = "http://localhost/";
+        String ip = "http://localhost:4010/";
         if (!this.getConfig().getBoolean("debug")) {
             Path path = Paths.get(System.getProperty("user.dir") + "/ip");
             try {
-                ip = String.format("http://%s/", Files.readAllLines(path).get(0));
+                ip = String.format("http://%s:4010/", Files.readAllLines(path).get(0));
             } catch (IOException e) {
                 e.printStackTrace(System.err);
             }

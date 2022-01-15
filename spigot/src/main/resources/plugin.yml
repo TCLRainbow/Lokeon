@@ -1,5 +1,5 @@
 name: Lokeon
-version: "2.0"
+version: "2.0.1"
 api-version: "1.16"
 main: chingdim.lokeon.Lokeon
 
